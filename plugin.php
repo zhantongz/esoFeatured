@@ -33,7 +33,7 @@ class ETPlugin_Featured extends ETPlugin {
 
     public function handler_conversationController_conversationIndexDefault($sender, $conversation, $controls, $replyForm, $replyControls)
     {
-        if (ET::$session->isAdmin()) {
+        if ($conversation["canModerate"]) {
             $controls->add("featured", "<a href='".URL("conversation/featured/".$conversation["conversationId"]."/?token=".ET::$session->token."&return=".urlencode($sender->selfURL))."' id='control-featured'><i class='icon-star'></i> <span>".T($conversation["featured"] ? "Un-feature it" : "Feature it")."</span></a>", 0);
         }
     }
@@ -45,10 +45,12 @@ class ETPlugin_Featured extends ETPlugin {
 
     public function action_conversationController_featured($controller, $conversationId = false)
     {
-        if (!ET::$session->isAdmin() or !$controller->validateToken()) return;
+        if (!$controller->validateToken()) return;
 
         // Get the conversation.
         if (!($conversation = $controller->getConversation($conversationId))) return;
+
+        if (!ET::$session->isAdmin() and !$conversation["canModerate"]) return;
 
         $featured = !$conversation["featured"];
         $this->setFeatured($conversation, $featured);
