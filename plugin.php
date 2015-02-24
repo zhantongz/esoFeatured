@@ -118,7 +118,7 @@ class ETPlugin_Featured extends ETPlugin {
     {
         if ($activity["data"]["featured"])
         return array(
-            sprintf(T("%s featured %s by you."), name($activity["fromMemberName"]), "<strong>".sanitizeHTML($activity["data"]["title"])."</strong>"),
+            sprintf(T('%1$s featured %2$s by you.'), name($activity["fromMemberName"]), "<strong>".sanitizeHTML($activity["data"]["title"])."</strong>"),
             URL(conversationURL($activity["data"]["conversationId"]))
         );
         else
