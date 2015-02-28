@@ -144,13 +144,14 @@ class ETPlugin_Featured extends ETPlugin {
         ->where("featured=1")
         ->where("startMemberId=$memberId");
 
-        return $sql->length;
+        return count($sql);
     }
 
     public function handler_MemberController_initProfile($controller, &$member, $panes) {
         $statistics = $controller->data["statistics"];
         $statistics["postCount"] = $this->getFeaturedCount($member["memberId"]);
         $controller->data("statistics", $statistics);
+        $controller->renderProfile("member/statistics");
     }
 
 }
