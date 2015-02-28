@@ -148,11 +148,8 @@ class ETPlugin_Featured extends ETPlugin {
     }
 
     public function handler_MemberController_initProfile($controller, &$member, $panes) {
-        $controller->action_statistics();
-        $statistics = $controller->data["statistics"];
-        $statistics["postCount"] = $this->getFeaturedCount($member["memberId"]);
-        $controller->data("statistics", $statistics);
-        $controller->renderProfile("member/statistics");
+        $statistics["featuredCount"] = $this->getFeaturedCount($member["memberId"]);
+        $panes->add("example", "<a href='".URL(memberURL($member["memberId"], $member["username"], "example"))."'>".T("Featured")."</a>");
     }
 
 }
