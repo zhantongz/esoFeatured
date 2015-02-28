@@ -145,8 +145,8 @@ class ETPlugin_Featured extends ETPlugin {
         $featured = ET::SQL()
         ->select("COUNT(DISTINCT conversationId)")
         ->from("conversation")
-        ->where("featured=1 AND startMemberId=$memberId");
-    
+        ->where("featured=1 AND startMemberId=$member");
+
         $this->data("featured", $featured);
 
         $this->renderProfile("member/featured");
