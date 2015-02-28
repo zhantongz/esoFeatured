@@ -138,14 +138,14 @@ class ETPlugin_Featured extends ETPlugin {
     }
 
     public function handler_MemberController_initProfile($controller, &$member, $panes) {
-        $panes->add("featured", "<a href='".URL(memberURL($member["memberId"], $member["username"], "example"))."'>".T("Featured")."</a>");
+        $panes->add("featured", "<a href='".URL(memberURL($member["memberId"], $member["username"], "featured"))."'>".T("Featured")."</a>");
     }
 
     public function action_memberController_featured($controller, $member = "") {
         $featured = ET::SQL()
         ->select("COUNT(DISTINCT conversationId)", "featuredCount")
         ->from("conversation")
-        ->where("featured=1 AND startMemberId=$member");
+        ->where("featured=1 AND startMemberId=".$member["memberId"]);
 
         $controller->data("featured", $featured);
 
