@@ -143,7 +143,7 @@ class ETPlugin_Featured extends ETPlugin {
 
     public function action_memberController_featured($controller, $member = "") {
         $featured = ET::SQL()
-        ->select("COUNT(DISTINCT conversationId)")
+        ->select("COUNT(DISTINCT conversationId)", "featuredCount")
         ->from("conversation")
         ->where("featured=1 AND startMemberId=$member");
 
