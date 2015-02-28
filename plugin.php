@@ -147,9 +147,9 @@ class ETPlugin_Featured extends ETPlugin {
         ->from("conversation")
         ->where("featured=1 AND startMemberId=$member");
 
-        $this->data("featured", $featured);
+        $controller->data("featured", $featured);
 
-        $this->renderProfile("member/featured");
+        $controller->renderProfile("member/featured");
     }
 
 }
