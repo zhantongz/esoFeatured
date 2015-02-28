@@ -3,7 +3,7 @@
 ET::$pluginInfo["Featured"] = array(
     "name"        => "Featured",
     "description" => "A plugin enabling the label of featured posts",
-    "version"     => "1.1",
+    "version"     => "1.4",
     "author"      => "Z. Tong Zhang",
     "authorEmail" => "zhang@zhantong.org",
     "authorURL"   => "https://ztong.me",
@@ -14,7 +14,7 @@ class ETPlugin_Featured extends ETPlugin {
     public static $icon_featured;
 
     public function init() {
-        $this->icon_featured = "icon-star";
+        $this->icon_featured = "icon-lightbulb";
 
         ET::define("label.featured", "Featured");
         ET::define("gambit.featured", "featured");
@@ -44,7 +44,7 @@ class ETPlugin_Featured extends ETPlugin {
     public function handler_conversationController_conversationIndexDefault($sender, $conversation, $controls, $replyForm, $replyControls)
     {
         if ($conversation["canModerate"]) {
-            $controls->add("featured", "<a href='".URL("conversation/featured/".$conversation["conversationId"]."/?token=".ET::$session->token."&return=".urlencode($sender->selfURL))."' id='control-featured'><i class='".$this->icon_featured."'></i> <span>".T($conversation["featured"] ? "Un-feature it" : "Feature it")."</span></a>", 0);
+            $controls->add("featured", "<a href='".URL("conversation/featured/".$conversation["conversationId"]."/?token=".ET::$session->token."&return=".str_replace("%2F", "", urlencode($sender->selfURL)))."' id='control-featured'><i class='".$this->icon_featured."'></i> <span>".T($conversation["featured"] ? "Un-feature it" : "Feature it")."</span></a>", 0);
         }
     }
 
@@ -118,7 +118,7 @@ class ETPlugin_Featured extends ETPlugin {
     {
         if ($activity["data"]["featured"])
         return array(
-            sprintf(T('%1$s featured %2$s by you.'), name($activity["fromMemberName"]), "<strong>".sanitizeHTML($activity["data"]["title"])."</strong>"),
+            sprintf(T('%s featured %s by you.'), name($activity["fromMemberName"]), "<strong>".sanitizeHTML($activity["data"]["title"])."</strong>"),
             URL(conversationURL($activity["data"]["conversationId"]))
         );
         else
@@ -135,6 +135,22 @@ class ETPlugin_Featured extends ETPlugin {
             "title" => $conversation["title"],
             "featured" => $featured
         ));
+    }
+
+    public function getFeaturedCount($memberId) {
+        $sql = ET::SQL()
+        ->select("DISTINCT conversationId")
+        ->from("conversation")
+        ->where("featured=1")
+        ->where("startMemberId=$memberId");
+
+        return $sql->length;
+    }
+
+    public function handler_MemberController_initProfile($controller, &$member, $panes) {
+        $statistics = $controller->data["statistics"];
+        $statistics["postCount"] = getFeaturedCount($member["memberId"]);
+        $this->data("statistics", $statistics);
     }
 
 }
