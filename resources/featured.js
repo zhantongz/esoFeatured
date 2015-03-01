@@ -1,7 +1,4 @@
 $(function() {
-
-	addJSLanguage("Feature it", "Un-feature it");
-
 	ETConversation.toggleFeatured = function() {
 		$("#control-featured span").html(T($("#control-featured span").html() == T("Feature it") ? "Un-feature it" : "Feature it"));
 		$.ETAjax({
